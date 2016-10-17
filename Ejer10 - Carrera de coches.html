@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      #tablero {
+        width: 100%;
+        height: 500px;
+        position: relative;
+        background-color: azure;
+        border: 1px solid black;
+      }
+
+      .calles {
+        position: relative;
+        border: 1px solid black;
+        height: 98px;
+      }
+
+      #lineaMeta {
+        position: absolute;
+        left: 85%;
+        height: 100%;
+        width: 15%;
+      }
+
+      .coches {
+        position: absolute;
+        width: 90px;
+        height: 100%;
+      }
+    </style>
+    <script type="text/javascript">            
+      var imagenesCoches = ["http://theglamping.com/wp-content/uploads/2013/04/coche.png", 
+                            "http://freeiconbox.com/icon/256/2019.png", 
+                            "http://autoescuelavilla.es/autoescuelavilla_es/wp-content/uploads/2013/11/coche.png",
+                            "http://image.flaticon.com/icons/svg/61/61581.svg",
+                            "https://d30y9cdsu7xlg0.cloudfront.net/png/61292-200.png"]; 
+
+      function crearCoches() {
+        var nCoches = document.getElementById("nCoches").value;
+        var cocheNuevo;
+
+        // Borra los coches creados si habia alguno.
+        var cochesCreados = document.querySelectorAll(".coches");
+        if (cochesCreados.length > 0) {
+          for (i = 0; i < cochesCreados.length; i++) {
+            cochesCreados[i].parentNode.removeChild(cochesCreados[i]);
+          }
+        }
+          
+        // Crea coches nuevos
+        for (i = 0; i < nCoches; i++) {
+          cocheNuevo = document.createElement("img");
+          cocheNuevo.id = "coche" + i;
+          cocheNuevo.value = i;
+          cocheNuevo.className = "coches";
+          cocheNuevo.src = imagenesCoches[i];
+
+          var nombreCalle = "calle" + i;
+          document.getElementById(nombreCalle).appendChild(cocheNuevo);
+
+          document.getElementById("iniciarCarrera").disabled = false;
+        }
+
+        document.getElementById("info").innerHTML = "Se han creado los coches";
+        
+      }
+      
+      function iniciarCarrera () {
+        // Cada coche tiene una velocidad aleatoria
+        var podio = new Array;
+        var posicion = 1;
+        
+        var cochesCreados = document.getElementsByClassName("coches");
+        
+        for (i = 0; i < cochesCreados.length; i++) {
+          // En vez de crear un intervalo para cada coche, llamamos a una funcion para cada coche que crea intervalos. 
+          // De esta forma nos referimos a la misma variable pero de diferentes coches.
+          cocheAnda(cochesCreados[i]);
+        }
+        
+        document.getElementById("info").innerHTML = "¡Comienza la carrera!";
+        
+        function cocheAnda (coche) {
+          var carreraCoche = setInterval(movimientoCoche, Math.random() * 20, coche);
+        
+          function movimientoCoche (coche) {
+            var coches = document.getElementsByClassName("coches");
+            coche.style.left = coche.offsetLeft + 1 + "px";
+
+            // Comprueba ganador
+            if (coche.offsetLeft + coche.offsetWidth == document.getElementById("lineaMeta").offsetLeft) {
+              podio.push(coche.value);
+              clearInterval(carreraCoche);
+              
+              document.getElementById("info").innerHTML = "Ha ganado el coche de la calle " + coche.value;
+              document.getElementById("iniciarCarrera").disabled = true;
+              
+              if (podio.length == cochesCreados.length) {
+                document.getElementById("info").innerHTML = "La carrera ha terminado";
+                alert("1º - Calle " + podio[0] + "| 2º - Calle " + podio[1] + "| 3º - Calle " + podio[2]);
+              }
+
+              
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <select id="nCoches">
+      <option value="2">2 Coches</option>
+      <option value="3">3 Coches</option>
+      <option value="4">4 Coches</option>
+      <option value="5">5 Coches</option>
+    </select>
+    <button onclick="crearCoches()" >Crear</button>
+    <button id="iniciarCarrera" onclick="iniciarCarrera()" disabled="disabled">Iniciar carrera</button>
+
+    <p id="info">Info: Introduce el numero de coches..</p>
+    <div id ="tablero">
+      <img id="lineaMeta" src="https://s-media-cache-ak0.pinimg.com/564x/d0/4e/d3/d04ed30078094e461755471a29e0c47a.jpg">
+      <div id="calle0" class="calles" >Calle 0</div>
+      <div id="calle1" class="calles" >Calle 1</div>
+      <div id="calle2" class="calles" >Calle 2</div>
+      <div id="calle3" class="calles" >Calle 3</div>
+      <div id="calle4" class="calles" >Calle 4</div>
+    </div>
+  </body>
+</html>

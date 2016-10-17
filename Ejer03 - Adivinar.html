@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<script>
+			var numeroAleatorio = Math.floor((Math.random() * 10) + 1);
+			console.log("El numero aleatorio es: " + numeroAleatorio);
+
+			var intentos = 0;
+			var intervalo;
+
+
+			function iniciarCuenta () {
+				var cuenta = 10;
+
+
+				intervalo = setInterval(cuentaAtras, 1000);
+				document.getElementById("botonComenzar").disabled = true;
+
+			
+
+				function cuentaAtras() {
+
+					if (cuenta > 0) {
+						document.getElementById("cuentaAtras").innerHTML = cuenta;
+						cuenta--;
+						
+					
+					} else {
+						document.getElementById("resultado").innerHTML = "Has fallado";
+						clearInterval(intervalo);
+						document.getElementById("botonComenzar").disabled = false;
+
+					}
+				}
+			}
+
+			function comprobarIntento () {
+				console.log(document.getElementById("numeroIntroducido").value);
+				if (document.getElementById("numeroIntroducido").value == numeroAleatorio) {
+					clearInterval(intervalo);
+					document.getElementById("resultado").innerHTML = "Has ganado";
+					document.getElementById("botonComenzar").disabled = false;
+				} else {
+					intentos++;
+					document.getElementById("contadorIntentos").innerHTML = "Intentos: " + intentos;
+				}
+			}
+
+		</script>
+
+	</head>
+	<body>
+		<button id="botonComenzar" onclick="iniciarCuenta()">Comenzar</button>
+
+		<div id="cuentaAtras">10</div>
+
+		<h1>Adivina</h1>
+		<p>Introduce un numero</p>
+		<input id="numeroIntroducido" type="number" name="numeroIntroducido" step="1">
+		<button id="botonIntentar" onclick="comprobarIntento()">Aceptar</button>
+		<div id="contadorIntentos">Intentos: 0</div>
+
+		<div id="resultado"></div>
+
+		
+	</body>
+</html>

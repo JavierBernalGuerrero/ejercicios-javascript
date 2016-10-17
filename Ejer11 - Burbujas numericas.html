@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      #contenedor {
+        position: relative;
+        width: 80%;
+        height: 550px;
+        background-color: azure;
+        border: 1px solid black;
+        
+      }
+      
+      .burbuja {
+        position: absolute;
+        border-radius: 100%;
+        text-align: center;
+        vertical-align: center;
+        
+      }
+      
+      .burbuja:hover {
+        cursor: default;
+        
+      }
+    </style>
+    <script type="text/javascript">
+      var colores = ["red", "blue", "green", "grey", "coral", "chocolate", "dodgerblue", "yellow", "brown", "blueviolet"];
+      
+      function comenzarPartida () {
+        crearBurbujaInicial();
+        
+        function crearBurbujaInicial () {
+          var burbuja = document.createElement("div");
+          document.getElementById("contenedor").appendChild(burbuja);
+          
+          burbuja.className = "burbuja";
+          burbuja.value = 0;
+          burbuja.style.backgroundColor = colores[burbuja.value % 10];
+          burbuja.style.width = Math.floor(Math.random() * 50) + 15 + "px";
+          burbuja.style.height = burbuja.offsetWidth + "px";
+          burbuja.style.left = (Math.random() * 950) + "px";
+          burbuja.style.top = (Math.random() * 500) + "px";
+          burbuja.innerHTML = burbuja.value;
+          
+          burbuja.setAttribute("onClick", "aumentarBurbuja(this)");
+          burbuja.setAttribute("ondblclick", "eliminarBurbuja(this)");
+          
+        }
+      }
+      
+      function aumentarBurbuja (burbujaElegida) {
+        var burbujaNueva = document.createElement("div");
+        document.getElementById("contenedor").appendChild(burbujaNueva);
+
+        burbujaNueva.className = "burbuja";
+        burbujaNueva.value = burbujaElegida.value + 1;
+        burbujaNueva.style.backgroundColor = colores[burbujaNueva.value % 10];
+        burbujaNueva.style.width = Math.floor(Math.random() * 75) + 25 + "px";
+        burbujaNueva.style.height = burbujaNueva.offsetWidth + "px";
+        burbujaNueva.style.left = (Math.random() * 950) + "px";
+        burbujaNueva.style.top = (Math.random() * 500) + "px";
+        burbujaNueva.innerHTML = burbujaNueva.value;
+
+        burbujaNueva.setAttribute("onClick", "aumentarBurbuja(this)");
+        burbujaNueva.setAttribute("ondblclick", "eliminarBurbuja(this)");
+
+      }
+      
+      function eliminarBurbuja (burbujaElegida) {
+        burbujaElegida.parentNode.removeChild(burbujaElegida);
+        
+      }
+    </script>
+  </head>
+  <body>
+    <button id="botonComenzar" onclick="comenzarPartida()">Comenzar</button>
+    <div id="contenedor">
+      
+    </div>
+  </body>
+</html>

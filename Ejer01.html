@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<script>
+			var cuenta = 10;
+
+			var intervalo = setInterval( cuentaAtras, 1000);
+
+			function cuentaAtras() {
+				if (cuenta > 0) {
+					cuenta--;
+					document.getElementById("miCuenta").innerHTML = cuenta;
+				
+				} else {
+					document.getElementById("miCuenta").innerHTML = "FIN";
+					clearInterval(intervalo);
+
+				}
+			}
+		</script>
+
+	</head>
+	<body>
+
+		<div id="miCuenta">10</div>
+	</body>
+</html>

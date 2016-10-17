@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      #contenedor {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        background-color: azure;
+        border: 1px solid black;
+      }
+      
+      #coche {
+        position: absolute;
+        left: 0px;
+        width: 150px;
+        height: 100px;
+        border: 1px solid black;
+      }
+      
+      #muro {
+        position: absolute;
+        width: 200px;
+        height: 300px;
+        border: 1px solid black;
+      }
+    </style>
+    <script type="text/javascript">
+      var pasoLibre = false;
+      
+      function posicionarCoche () {
+        // Ajustar el coche a la linea inferior
+        var cocheCapa = document.getElementById("coche");
+        cocheCapa.style.top = cocheCapa.parentNode.offsetTop + cocheCapa.parentNode.offsetHeight - 80 + "px";
+        
+      }
+      
+      function posicionarMuro () {
+        // Ajustar el muro a la linea inferior
+        var muroCapa = document.getElementById("muro");
+        muroCapa.style.top = muroCapa.parentNode.offsetTop + muroCapa.parentNode.offsetHeight - 250 + "px";
+        muroCapa.style.left = muroCapa.parentNode.offsetWidth / 2.5 + "px";
+        
+      }
+      
+      function avanzarCoche () {
+        var cocheCapa = document.getElementById("coche");
+        var muroCapa = document.getElementById("muro");
+        var avance = setInterval(avanzar, 1, cocheCapa);
+        
+        function avanzar (coche) {
+          if ((muroCapa.offsetLeft == coche.offsetLeft + coche.offsetWidth && !pasoLibre) || coche.offsetLeft + coche.offsetWidth >= coche.parentNode.offsetWidth) {
+            document.getElementById("botonAvanzar").disabled = true;
+            document.getElementById("botonRetroceder").disabled = false;
+            clearInterval(avance);
+          }
+          
+          coche.style.left = coche.offsetLeft + 1 + "px";
+        }
+        
+      }
+      
+      function retrocederCoche () {
+        var cocheCapa = document.getElementById("coche");
+        var muroCapa = document.getElementById("muro");
+        var avance = setInterval(avanzar, 1, cocheCapa);
+        
+        function avanzar (coche) {
+          if ((muroCapa.offsetLeft + muroCapa.offsetWidth == coche.offsetLeft && !pasoLibre) || coche.offsetLeft <= 0) {
+            document.getElementById("botonAvanzar").disabled = false;
+            document.getElementById("botonRetroceder").disabled = true;
+            clearInterval(avance);
+          }
+          
+          coche.style.left = coche.offsetLeft - 1 + "px";
+        }
+        
+      }
+      
+      // Sube o baja el muro
+      function animarMuro () {
+        var muroCapa = document.getElementById("muro");
+        
+        if (muroCapa.offsetTop > muroCapa.parentNode.offsetHeight / 2) {
+          // SUBIR MURO
+          var subir = setInterval(subir, 10, muroCapa);
+          
+        } else {
+          // BAJAR MURO
+          var bajar = setInterval(bajar, 10, muroCapa);
+          console.log("BAJA");
+        }
+        
+        function subir (muro) {
+          muro.style.top = muro.offsetTop - 1 + "px";
+          
+          if (muro.offsetTop == parseInt(muro.parentNode.offsetHeight / 4)) {
+            clearInterval(subir);
+            document.getElementById("botonAvanzar").disabled = false;
+            document.getElementById("botonRetroceder").disabled = false;
+            pasoLibre = true;
+          }
+        }
+        
+        function bajar (muro) {
+          muro.style.top = muro.offsetTop + 1 + "px";
+          
+          if (muro.offsetTop == muroCapa.parentNode.offsetTop + muroCapa.parentNode.offsetHeight - 250) {
+            pasoLibre = false;
+            clearInterval(bajar);
+          }
+        }
+      }
+      
+    </script>
+  </head>
+  <body>
+    <div id="contenedor">
+      <button id="botonAvanzar" onclick="avanzarCoche()">Avanzar</button>
+      <button id="botonLevantarMuro" onclick="animarMuro()">Mover muro</button>
+      <button id="botonRetroceder" onclick="retrocederCoche()">Retroceder</button>
+      
+      <img id="coche" onload="posicionarCoche()" src="http://theglamping.com/wp-content/uploads/2013/04/coche.png">
+      <img id="muro" onload="posicionarMuro()" src="https://openclipart.org/image/2400px/svg_to_png/174358/wall.png">
+      
+    </div>
+  </body>
+</html>

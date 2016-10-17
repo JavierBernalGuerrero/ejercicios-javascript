@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+        #contenedor {
+          width: 100%;
+          height: 610px;
+          position: relative;
+          background-color: azure;
+          border: 1px solid black;
+        }
+
+        #avion {
+          width: 65px;
+          height: 50px;
+          position: absolute;
+          top: 1px;
+          left: 1px;
+        }
+
+        .bomba {
+          width: 25px;
+          height: 25px;
+          position: absolute;
+          filter: invert(1); /* Invierte los colores que aparecen por pantalla */
+          transform: scaleX(-1); /* Espeja la imagen */
+        }
+
+        .edificios {
+          width: 100px;
+          height: 100px;
+          position: absolute;
+          border: 
+        }
+    </style>
+    <script>
+      var movimientoAvion = setInterval(desplazarAvion, 10);
+
+      function desplazarAvion () { 
+        var avionCapa = document.getElementById("avion");
+        avionCapa.style.left = avionCapa.offsetLeft + 1 + "px";
+
+        if (avionCapa.offsetLeft + avionCapa.offsetWidth == avionCapa.parentNode.offsetWidth) {
+          avionCapa.style.left = avionCapa.parentNode.offsetLeft + "px";
+          barajarEdificios();
+
+        }
+      }
+
+      function barajarEdificios () {
+        var edificio1 = document.getElementById("edificio1");
+        edificio1.src = "https://image.freepik.com/iconos-gratis/edificios-de-dibujos-animados_318-41281.jpg";
+        var edificio2 = document.getElementById("edificio2");
+        edificio2.src = "https://image.freepik.com/free-icon/city-buildings-silhouette_318-41430.png";
+        var edificio3 = document.getElementById("edificio3");
+        edificio3.src = "https://image.freepik.com/free-icon/city-hall-building_318-28672.png";
+
+        var altoContenedor = document.getElementById("contenedor").offsetHeight;
+        var anchoContenedor = document.getElementById("contenedor").offsetWidth;
+
+        edificio1.style.top = altoContenedor - edificio1.offsetHeight - 10 + "px";
+        edificio2.style.top = altoContenedor - edificio1.offsetHeight - 10 + "px";
+        edificio3.style.top = altoContenedor - edificio1.offsetHeight - 10 + "px";
+
+        edificio1.style.left = (Math.random() * anchoContenedor / 3) + "px";
+        var espacioDisponible = anchoContenedor - (edificio1.offsetLeft + edificio1.offsetWidth);
+
+        edificio2.style.left = (Math.random() * espacioDisponible / 3) + edificio1.offsetLeft + edificio1.offsetWidth + "px";
+        espacioDisponible = anchoContenedor - (edificio2.offsetLeft + edificio2.offsetWidth);
+
+        edificio3.style.left = (Math.random() * espacioDisponible / 3) + edificio2.offsetLeft + edificio2.offsetWidth + "px";
+
+      }
+
+      function lanzamientoBomba () {
+          var avion = document.getElementById("avion");
+          var bomba = document.createElement("img");
+          document.getElementById("contenedor").appendChild(bomba);
+          bomba.src = "http://vignette2.wikia.nocookie.net/fallout/images/a/a6/Alternate_mini_nuke_icon.png/revision/latest?cb=20140115013214";
+          bomba.className = "bomba";
+          bomba.style.left = avion.offsetLeft + "px";
+          bomba.style.top = avion.offsetTop + "px";
+
+          var movimientoBomba = setInterval(desplazarBomba, 1);
+
+          function desplazarBomba () {
+            bomba.style.top = bomba.offsetTop + 1 + "px";
+
+            var edificios = document.querySelectorAll(".edificios");
+            
+            for (i = 0; i < edificios.length; i++) {
+              var puntoMedioBomba = bomba.offsetLeft + bomba.offsetWidth / 2;
+              if (puntoMedioBomba > edificios[i].offsetLeft && puntoMedioBomba < edificios[i].offsetLeft + edificios[i].offsetWidth && bomba.offsetTop == edificios[i].offsetTop) {
+                edificios[i].src = "https://s-media-cache-ak0.pinimg.com/originals/15/d8/1e/15d81e4687d9fc50cf541b9ca931faa6.png";
+                bomba.parentNode.removeChild(bomba);
+              }
+            }
+            
+            if (bomba.offsetTop + bomba.offsetHeight == bomba.parentNode.offsetHeight) {
+              clearInterval(movimientoBomba);
+              bomba.parentNode.removeChild(bomba);
+            }
+          }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="contenedor">
+      <!-- <img id="avion" src="http://feriadestaca.es/wp-content/uploads/2014/03/icono_avion-300x300.png" onclick="lanzamientoBomba()"> -->
+      <img id="avion" onload="barajarEdificios()" src="http://clientes.ticmakers.com/prospecta2015/images/Articulos/icono_avion-300x300.png" onclick="lanzamientoBomba()">
+      <img id="edificio1" class="edificios">
+      <img id="edificio2" class="edificios">
+      <img id="edificio3" class="edificios">
+    </div>
+
+  </body>
+</html> 

@@ -1,1 +1,3 @@
-# ejercicios-javascript
+# Ejercicios *Javascript*
+
+Ejercicios practicos

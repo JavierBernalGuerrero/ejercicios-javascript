@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #tablero {
+                width: 770px;
+                height: 620px;
+                position: relative;
+                background-color: cadetblue;
+            }
+            .burbuja {
+                border-radius: 100%;
+                position: absolute;
+            }
+        </style>
+        <script>
+            var intervalo;
+            var burbujaCapa;
+            
+            function crear() {
+                console.log("Has pulsado sobre crear.");
+                burbujaCapa = document.createElement("div");
+                burbujaCapa.className = "burbuja";
+                burbujaCapa.style.width = Math.random(50, 250) * 100 + "px";
+                burbujaCapa.style.height = burbujaCapa.style.width;
+                burbujaCapa.style.left = (Math.random() * 700) + "px";
+                burbujaCapa.style.top = (Math.random() * 530) + "px";
+                
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                burbujaCapa.style.backgroundColor = "rgb(" + r + "," + g + "," + b + ")";
+                
+                document.getElementById("tablero").appendChild(burbujaCapa);
+                burbujaCapa.setAttribute("onClick", "borrarBurbuja(this)"); // <- Este "this" hace referencia a "burbujaCapa"
+            }
+
+            function borrarBurbuja (burbuja) {
+                var contenedor = document.getElementById("tablero");
+                contenedor.removeChild(burbuja);
+                //console.log(burbuja); 
+                //console.log(this); // <- Este "this" hace referencia al pripio fichero
+            }
+            
+            function limpiar() {
+                console.log("Has pulsado sobre limpiar.");
+                //var listaBurbujas = document.getElementsByClassName("burbuja"); // <- Genera una lista dinamica.
+                var listaBurbujas = document.querySelectorAll(".burbuja"); // <- Genera una lista estatica.
+                console.log("La lista tiene " + listaBurbujas.length + " burbujas.");
+                for (i = 0; i < listaBurbujas.length; i++) {
+                    console.log("Contador bucle: " + i);
+                    borrarBurbuja(listaBurbujas[i]);
+                }
+
+            }
+        </script>
+    </head>
+    <body>
+        <button id="botonIniciar" onclick="crear()">Crear</button>
+        <button id="botonLimpiar" onclick="limpiar()">Limpiar</button>
+
+        <div id ="tablero"></div>
+    </body>
+</html>

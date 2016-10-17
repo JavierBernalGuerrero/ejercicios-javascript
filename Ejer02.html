@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<script>
+			
+			function iniciarCuenta () {
+				var cuenta = document.getElementById("cantidad").value;
+				var intervalo = setInterval(cuentaAtras, 1000);
+				document.getElementById("boton").disabled = true;
+
+			
+
+				function cuentaAtras() {
+
+					if (cuenta > 0) {
+						document.getElementById("miCuenta").innerHTML = cuenta;
+						cuenta--;
+						
+					
+					} else {
+						document.getElementById("miCuenta").innerHTML = "FIN";
+						clearInterval(cuenta);
+						document.getElementById("boton").disabled = false;
+
+					}
+				}
+			}
+		</script>
+
+	</head>
+	<body>
+		<input id="cantidad" type="number" name="cantidad">
+		<button id="boton" onclick="iniciarCuenta()">Enviar</button>
+
+		<div id="miCuenta"></div>
+	</body>
+</html>
