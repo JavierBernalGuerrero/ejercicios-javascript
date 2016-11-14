@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>stop demo</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <style>
+      #contenedor {
+        position: relative;
+        background-color: aliceblue;
+        width: 1000px;
+        height: 350px;
+        border: 1px solid black;
+      }
+      
+      #cielo {
+        position: absolute;
+        background-image: url(http://spaceplace.nasa.gov/review/blue-sky/bluesky.en.png);
+        width: inherit;
+        height: 350px;
+      }
+      
+      #coche {
+		width: 90px;
+		height: 53px;
+        position: absolute;
+        background-repeat: no-repeat;
+        background-image: url(http://theglamping.com/wp-content/uploads/2013/04/coche.png);
+        background-size: 100px;
+      }
+      
+      .semaforo {
+        position: absolute;
+        top: 290px;
+        background-image: url(http://cliparts.co/cliparts/pi5/8gk/pi58gkMbT.png);
+        background-repeat: no-repeat;
+        background-size: 100px;
+        height: 60px;
+        width: 30px;
+      }
+      
+      .semaforoRojo {
+        background-position: 0;
+      }
+      
+      .semaforoAmarillo {
+        background-position: -30px;
+      }
+      
+      .semaforoVerde {
+        background-position: -70px;
+      }
+      
+      .bola {
+        position: absolute;
+        top: 320px;
+        left: 950px;
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+        background-color: red;
+        
+      }
+    </style>
+    <script>
+      $(document).ready(function () {
+        
+        var alturaCoche = parseInt($("#contenedor").css("height")) - parseInt($("#coche").css("height"));
+        $("#coche").css("top", alturaCoche + "px");
+        
+        function moverCieloIzquierda () {
+          $($("#cielo")).animate({backgroundPosition: "-=1px"}, 10, function () {
+            if (parseInt($(this).css("backgroundPosition")) % 300 == 0) {
+              $(".semaforo").each(function () {
+                $(this).remove();
+              });
+              generarSemaforo();
+              generarBola();
+            }
+            
+            $(this).stop();
+            moverCieloIzquierda();
+          });
+        }
+        
+        function moverCieloDerecha () {
+          $($("#cielo")).animate({backgroundPosition: "+=1px"}, 10, function () {
+            if (parseInt($(this).css("backgroundPosition")) % 300 == 0) {
+              $(".semaforo").each(function () {
+                $(this).remove();
+              });
+              generarSemaforo();
+              generarBola();
+            }
+            
+            $(this).stop();
+            moverCieloDerecha();
+          });
+        }
+        
+        function generarSemaforo () {
+          var semaforo = $('<div></div>').addClass('semaforo');
+          $("#contenedor").append(semaforo);
+          var posicionSemaforo = Math.random() * 900;
+          semaforo.css("left", posicionSemaforo + "px");
+          
+          var colorLuz = parseInt(Math.random() * 3);
+          switch (colorLuz) {
+            case 0:
+              semaforo.addClass('semaforoVerde');
+              break;
+            case 1:
+              semaforo.addClass('semaforoAmarillo');
+              break;
+            case 2:
+              semaforo.addClass('semaforoRojo');
+              break;
+          }
+        }
+        
+        function generarBola () {
+          var bola = $('<div></div>').addClass('bola');
+          $("#contenedor").append(bola);
+          
+          movimientoBola ();
+          
+          function movimientoBola () {
+            // COMPROBAR SI IMPACTA CONTRA EL COCHE O LLEGA AL FINAL [FALTA CONTROLAR EL TOP]
+            var inicioCapaBola = parseInt($(".bola").css("left"));
+            var finCapaCoche = parseInt($("#coche").css("left")) + parseInt($("#coche").css("width"));
+            var alturaCoche = parseInt($("#coche").css("top")) + parseInt($("#coche").css("height"));
+            var alturaBola = parseInt($(".bola").css("top"));
+            
+            if (inicioCapaBola == 0 || finCapaCoche == inicioCapaBola && alturaCoche > alturaBola) {
+              $(".bola").remove();
+              
+            } else {
+              $(".bola").animate({left: "-=10px"}, 20, movimientoBola);
+              
+            }
+            
+          }
+        }
+        
+        $("body").keydown(function(e) {
+          switch ((e.keyCode ? e.keyCode : e.which)) {
+            //case 13: // Enter
+            //case 27: // Esc
+            case 32: // Space
+                //Jump
+                $("#coche").animate({top: "-=50"}, 100).delay(100).animate({top: "+=50"}, 100);
+                break;
+            case 37: // Left Arrow
+                $("#cielo").stop();
+                moverCieloDerecha();
+                $("#coche").animate({left: "-=10"}, 1);
+                break;
+            /*case 38: // Up Arrow
+                $("#coche").animate({
+                    top: "-=10"
+                }, 1);
+                break;*/
+            case 39: // Right Arrow
+                $("#cielo").stop();
+                moverCieloIzquierda();
+                $("#coche").animate({left: "+=10"}, 1);
+                break;
+            /*case 40: // Down Arrow
+                $("#coche").animate({
+                    top: "+=10"
+                }, 1);
+                break;*/
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="contenedor">
+      <div id="cielo"></div>
+      <div id="coche"></div>
+    </div>
+    
+  </body>
+</html>

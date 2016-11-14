@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Ejercicio11</title>
+    <style>
+      body {
+        width: 100%;
+        height: 100%;
+      }
+      
+      #enunciado {
+        text-align: center;
+      }
+      
+      img {
+        display: block;
+        width: 600px;
+        height: 400px;
+        margin: auto;
+      }
+      
+      #info {
+        margin: auto;
+        text-align: center;
+        border: 1px solid black;
+        width: 600px;
+        height: 50px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $("#foto_34").mousemove(function(e) {
+          $("#info").show();
+          $("#info").text("[" + e.pageX + "x, " + e.pageY + "y]");
+        });
+        
+        $("#foto_34").mouseleave(function(e) {
+          $("#info").hide();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h3 id="enunciado">
+      Al pasar por encima de una imagen con id=”foto_34” que aparezca en otra capa “informacion” la posicion x e y, al dejar de pasar que quite esa informacion:
+    </h3>
+    <img id="foto_34" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Bundesstra%C3%9Fe_34_number.svg/2000px-Bundesstra%C3%9Fe_34_number.svg.png">
+    <div id="info"></div>
+    
+  </body>
+</html>

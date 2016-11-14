@@ -1,0 +1,313 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Examen (11/11/2016) - Javier Bernal Guerrero</title>
+    <style>
+      #tablero, #botones {
+        width: 600px;
+        height: 600px;
+        float: left;
+        background-color: blue;
+        border: 1px solid black;
+        border-radius: 15px;
+        margin: 0;
+        padding: 0;
+      }
+      
+      #botones {
+        width: 300px;
+        background-color: red;
+      }
+      
+      #cielo {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background-color: skyblue;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+      }
+      
+      #tierra {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background-color: green;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+      }
+      
+      #botones input {
+        display: block;
+        margin-top: 10px;
+        margin-left: 10px;
+      }
+      
+      .nube {
+        position: absolute;
+        background-image: url(img/cloud.png);
+        width: 150px;
+        height: 79px;
+      }
+      
+      .vientoImagen {
+        position: absolute;
+        margin-top: 20px;
+        width: 150;
+        height: 99;
+        
+      }
+      
+      .solImagen {
+        position: absolute;
+        margin-top: 20px;
+        width: 150;
+        height: 99;
+        
+      }
+      
+      .mar {
+        background-image: url(img/sea.png);
+      }
+      
+      .campo {
+        background-image: url(img/field.jpg);
+      }
+      
+      .barco {
+        position: absolute;
+        background-image: url(img/boat.png);
+        width: 125px;
+        height: 150px;
+      }
+      
+      .tractor {
+        position: absolute;
+        background-image: url(img/tractor.png);
+        width: 150px;
+        height: 95px;
+      }
+      
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Controla el numero de veces que se pulsa sobre el boton de viento
+        var primeraPulsacionViento = true; 
+        // Controla el numero de veces que se pulsa sobre el boton de sol
+        var primeraPulsacionSol = true; 
+        
+        $("#botonColor").change(function () {
+          $("#cielo").css("backgroundColor", $(this).val());
+        });
+        
+        // Al pulsar sobre el boton nube
+        $("#botonNube").click(function () {
+          var capaNube = $('<div></div>').addClass('nube');
+          
+          var topAleatorio = Math.random() * 100;
+          capaNube.css("top", topAleatorio);
+          
+          var leftAleatorio = Math.random() * 400;
+          capaNube.css("left", leftAleatorio);
+          
+          $("#cielo").append(capaNube);
+          
+          $("#contadorNubes").text($(".nube").length);
+          
+          // Si el viento esta soplando, las nuevas nubes se mueven
+          if ($(".vientoImagen").length > 0) {
+            moverNubes();
+          }
+          
+          // Si el sol está, las nuevas nubes desaparecen
+          if ($(".solImagen").length > 0) {
+            desaparecerNubes();
+          }
+        });
+        
+        // Al pulsar sobre el boton viento
+        $("#botonViento").click(function () {
+          
+          if (primeraPulsacionViento) {
+            primeraPulsacionViento = false;
+            
+            // Crear la imagen del viento
+            var imagenViento = $('<img>').attr('src', "img/wind.png").addClass("vientoImagen");
+            $("#cielo").append(imagenViento);
+            
+            moverNubes();
+            
+          } else {
+            primeraPulsacionViento = true;
+            
+            // Eliminar la imagen del viento
+            $(".vientoImagen").remove();
+            
+            // Para cada nube
+            $(".nube").each(function () {
+              $(this).stop();
+            
+            });
+            
+          }
+        });
+        
+        // Al pulsar sobre el boton sol
+        $("#botonSol").click(function () {
+          
+          if (primeraPulsacionSol) {
+            primeraPulsacionSol = false;
+            
+            // Crear la imagen del sol
+            var imagenSol = $('<img>').attr('src', "img/sun.png").addClass("solImagen");
+            $("#cielo").append(imagenSol);
+            
+            desaparecerNubes();
+            
+          } else{
+            primeraPulsacionSol = true;
+            
+            // Para cada sol
+            $(".nube").each(function () {
+              $(this).stop();
+            
+            });
+            
+            // Eliminar la imagen del sol
+            $(".solImagen").remove();
+            
+            
+          }
+        });
+        
+        // Al pulsar sobre el terreno "Mar"
+        $("#botonMar").click(function () {
+          $(".tractor").each(function () {
+            $(this).stop(true).fadeOut(2000, function () {
+              $(this).remove();
+              $("#contadorVehiculo").text($(".barco").length);
+
+              $("#botonVehiculo").attr("src", "img/boatbtn.png");
+              $("#tierra").removeClass("campo").addClass("mar");
+            });
+          });
+          
+          if ($(".tractor").length == 0) {
+            $("#botonVehiculo").attr("src", "img/boatbtn.png");
+            $("#tierra").removeClass("campo").addClass("mar");
+            
+          }
+        });
+        
+        // Al pulsar sobre el terreno "Campo"
+        $("#botonCampo").click(function () {
+          $(".barco").each(function () {
+            $(this).stop(true).fadeOut(2000, function () {
+              $(this).remove();
+              $("#contadorVehiculo").text($(".barco").length);
+              
+              $("#botonVehiculo").attr("src", "img/tractorbtn.png");
+              $("#tierra").removeClass("mar").addClass("campo");
+            });
+          });
+
+          if ($(".barco").length == 0) {
+            $("#botonVehiculo").attr("src", "img/tractorbtn.png");
+            $("#tierra").removeClass("mar").addClass("campo");
+            
+          }
+        });
+        
+        
+        // Pulsar sobre el vehiculo correspondiente
+        $("#botonVehiculo").click(function () {
+          var topVehiculoAleatorio = Math.random() * 250;
+          var leftVehiculoAleatorio = Math.random() * 100 + 400;
+          
+          if ($("#tierra").hasClass("mar")) {
+            // Genera Barcos
+            var capaBarco = $('<div></div>').addClass('barco');
+            capaBarco.css("top", topVehiculoAleatorio);
+            capaBarco.css("left", leftVehiculoAleatorio);
+            $("#tierra").append(capaBarco);
+            $("#contadorVehiculo").text($(".barco").length);
+            
+            moverVehiculo(capaBarco);
+            
+          } else {
+            // Genera Tractores
+            var capaTractor = $('<div></div>').addClass('tractor');
+            capaTractor.css("top", topVehiculoAleatorio);
+            capaTractor.css("left", leftVehiculoAleatorio);
+            $("#tierra").append(capaTractor);
+            $("#contadorVehiculo").text($(".tractor").length);
+            
+            moverVehiculo(capaTractor);
+            
+          }
+          
+          // Mueve el vehiculo correspondiente
+          function moverVehiculo(capaVehiculo) {
+            var velocidadAleatoria = Math.random() * 3000 + 1000;
+            var limiteDerechaVehiculo = parseInt($("#tierra").css("width")) - parseInt(capaVehiculo.css("width"));
+            
+            capaVehiculo.animate({left: "0px"}, velocidadAleatoria, "linear", function () {
+              velocidadAleatoria = Math.random() * 3000 + 1000;
+              
+              $(this).animate({left: limiteDerechaVehiculo}, velocidadAleatoria, "linear", moverVehiculo(capaVehiculo));
+              
+            });
+            
+          }
+        });
+        
+        // Mover cada nube
+        function moverNubes() {
+          $(".nube").each(function () {
+            var finCielo = parseInt($("#cielo").css("width")) - parseInt($(this).css("width"));
+            var velocidadAleatoria = Math.random() * 1000 + 5000;
+            $(this).stop().animate({left: finCielo}, velocidadAleatoria);
+          });
+
+        }
+        
+        // Desaparecer cada nube
+        function desaparecerNubes () {
+          $(".nube").each(function () {
+            var duracionAleatoria = Math.random() * 1000 + 1000;
+            $(this).fadeOut(duracionAleatoria, function () {
+
+              $(this).remove();
+
+              $("#contadorNubes").text($(".nube").length);
+            });
+          });
+        }
+        
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="tablero">
+      <div id="cielo"></div>
+      <div id="tierra"></div>
+    </div>
+    <div id="botones">
+      <input id="botonColor" type="color" value="skyblue">
+      <img id="botonNube" src="img/cloudbtn.png"><span id="contadorNubes">0</span>
+      <hr>
+      <img id="botonViento" src="img/windbtn.png">
+      <img id="botonSol" src="img/sunbtn.png">
+      <hr>
+      <img id="botonMar" src="img/seabtn.png">
+      <img id="botonCampo" src="img/fieldbtn.png">
+      <hr>
+      <img id="botonVehiculo" ><span id="contadorVehiculo"></span>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Ejercicio Teclas</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      
+      .teclas {
+        float: left;
+        width: 150px;
+        height: 150px;
+        margin: 0;
+        border: 1px solid black;
+      }
+      
+      #do {
+        background-color: chocolate;
+      }
+      
+      #re {
+        background-color: cadetblue;
+      }
+      
+      #mi {
+        background-color: aquamarine;
+      }
+      
+      #do.piano:nth-of-type(2n), #re.piano:nth-of-type(2n), #mi.piano:nth-of-type(2n) {
+        color: black;
+        background-color: white;
+      }
+      
+      #do.piano:nth-of-type(2n + 1), #re.piano:nth-of-type(2n + 1), #mi.piano:nth-of-type(2n + 1) {
+        color: white;
+        background-color: black;
+      }
+      
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $("#botonCambiar").click(function() {
+          var valor = $("#opcionesTeclas").val();
+          $("#" + valor).toggle();
+          
+        });
+        
+        // Pliega/Despliega las teclas
+        $("#botonPlegar").click(function() {
+          $(".teclas").show();
+          if ($(".teclas").css("height") == "0px") {
+            $(".teclas").animate({height: "150px"}, 1000, function() {
+              $("#botonPlegar").text("Plegar");
+            });
+            
+          } else {
+            $(".teclas").animate({height: "0px"}, 1000, function() {
+              $(this).hide();
+              $("#botonPlegar").text("Desplegar");
+            });
+          }
+          
+        });
+        
+        // Transforma en piano
+        $("#botonPiano").click(function() {
+          // Poner opciones para piano
+          $(".teclas").toggleClass("piano");
+        });
+        
+        // Transforma en guitarra las teclas
+        $("#botonGuitarra").click(function(i) {
+          // Poner opciones para guitarra
+          $(".teclas:visible").each(function (i) { // SOLO RECOGE LOS COMPONENTES QUE ESTEN VISIBLES
+            var altura = 100 * i + 50;
+            $(this).animate({height: altura});
+          });
+        });
+        
+        // Animacion de las teclas
+        $(".teclas").hover(function() {
+          $(this).animate({width: "200px", height: "200px", opacity: "0.5"}, 500);
+          
+        }, function () {
+          $(this).animate({width: "150px", height: "150px", opacity: "1"}, 500);
+          
+        });
+        
+        
+        // Escribe por pantalla los valores de las notas
+        $(".teclas").mouseenter(function() {
+          $("#info").append($(this).text());
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <select id="opcionesTeclas">
+      <option value="do">Do</option>
+      <option value="re">Re</option>
+      <option value="mi">Mi</option>
+    </select>
+    <button id="botonCambiar">Poner/Quitar</button>
+    <button id="botonPlegar">Plegar</button> <!-- Luego tiene que poner desplegar -->
+    <button id="botonPiano">Piano</button>
+    <button id="botonGuitarra">Guitarra</button>
+    
+    <p id="info">Recital: </p>
+    <br>
+    
+    <div id="do" class="teclas">Do </div>
+    <div id="re" class="teclas">Re </div>
+    <div id="mi" class="teclas">Mi </div>
+    
+    
+  </body>
+</html>

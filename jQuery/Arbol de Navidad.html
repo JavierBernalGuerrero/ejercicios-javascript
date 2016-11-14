@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="">
+  <head>
+    <meta charset="UTF-8">
+    <title>Árbol Navidad</title>
+    <link rel="stylesheet" type="text/css" href="css/estilo.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <style>
+      body{
+        background-color: black;
+        z-index: -1;
+        color:white;
+      }
+
+      #contenedor{
+        position: relative;
+        margin: 0 auto;
+        padding: 5px;
+        width: 400px;
+        height: 600px;
+
+      }
+
+      #controles{
+        position: relative;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      #comenzar {
+        float: left;
+        margin-left: 25px;
+        display: block;
+      }
+
+      #arbol{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 400px;
+        height: 370px;
+      }
+
+      #juego{
+        position: relative;
+        width: 400px;
+        height: 381px;
+        margin: 0 auto;
+        top: 10px;
+        background-color: white;	
+      }
+
+      .bolita{
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        top: 0px;
+        z-index:3;
+        left: 300px;
+      }
+    </style>
+    <script>
+      $(document).ready(function() {
+        $("#adornar").click(function () {
+          var contadorCreadas = parseInt($("#creadas").text()) + 1;
+          $("#creadas").text(contadorCreadas);
+          
+          var topAleatorio = Math.floor(Math.random() * 280) + 30; 
+          var leftAleatorio; // Tenemos que diferenciar en que fase del arbol cae la bola
+          
+          leftAleatorio = Math.floor(Math.random() * topAleatorio) + 200 - topAleatorio / 2;
+            
+          
+          
+          var color1 = Math.floor(Math.random() * 257) - 1;
+          var color2 = Math.floor(Math.random() * 257) - 1;
+          var color3 = Math.floor(Math.random() * 257) - 1;
+          var color = "rgb(" + color1 + ", " + color2 + ", " + color3 + ")";
+          
+          var capaBola = $('<div></div>').addClass('bolita').css({'background-color': color, 'left': leftAleatorio});
+          $("#juego").prepend(capaBola);
+          capaBola.animate({top: topAleatorio}, 1000);
+        });
+        
+        $("#mover").click(function () {
+          for (var i = 0; i < 4; i++) {
+            $("#arbol").animate({left: "+=20"}, 20);
+            $("#arbol").animate({left: "-=20"}, 20);
+          }
+          
+          var limiteInferior = 355;
+          $(".bolita").each(function (indice) {
+              $(this).delay(50*indice).animate({top: limiteInferior}, 1000, function () {
+                $(this).remove();
+              });
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+      <div id="contenedor">
+          <div id="controles">
+              <button id="adornar">Poner Adorno</button>
+              <button id="mover">Mover Árbol</button><br>
+              Bolas Creadas:<span id="creadas">0</span> Eliminadas:<span id="eliminadas">0</span>
+          </div>
+          <div id="juego"><img id="arbol" src="http://worldartsme.com/images/filigree-christmas-tree-clipart-1.jpg"></div>
+      </div>
+  </body>
+</html>
