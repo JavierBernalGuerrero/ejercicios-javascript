@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      #escenario {
+        position: relative;
+        width: 1000px;
+        height: 600px;
+        background-color: darkblue;
+        background-image: url(images/silueta.png);
+        background-repeat: no-repeat;
+        background-position: center;
+        
+      }
+    </style>
+    <script type="text/javascript">
+      var movimientoBatman;
+      var nivel = 1;
+      var jugadaCompletada;
+      
+      // Aqui comienza la partida
+      function empezar () {
+        jugadaCompletada = true; // <- Inicializamos este valor porque es el que controla que no podamos pulsar sobre el joker al lanzar las cartas.
+        
+        // Preparamos los botones.
+        document.getElementById("botonEmpezar").disabled = true;
+        document.getElementById("botonSubir").disabled = false;
+        document.getElementById("botonParar").disabled = false;
+        document.getElementById("botonBajar").disabled = false;
+        
+        // Limpiamos el tablero. Lo primero es comprobar si joker existe, asi sabremos si es primera partida o no.
+        if (document.getElementById("joker")) {
+          prepararTablero();
+        }
+        
+        // Crear batmobile
+        var batmobile = document.createElement("img");
+        batmobile.id = "batmobile";
+        batmobile.style.position = "absolute";
+        batmobile.style.left = 830 + "px";
+        batmobile.src = "images/batmobile.png";
+        
+        document.getElementById("escenario").appendChild(batmobile);
+        
+        // Crear batman
+        var batman = document.createElement("img");
+        batman.id = "batman";
+        batman.style.position = "absolute";
+        batman.style.left = 690 + "px";
+        batman.style.top = Math.floor((Math.random() * 450)) + "px";
+        batman.src = "images/batman.png";
+        
+        document.getElementById("escenario").appendChild(batman);
+        
+        // Crear joker
+        var joker = document.createElement("img");
+        joker.id = "joker";
+        joker.style.position = "absolute";
+        joker.style.left = 0 + "px";
+        joker.style.top = Math.floor((Math.random() * 450)) + "px";
+        joker.src = "images/joker.png";
+        joker.setAttribute("onClick", "lanzamiento()");
+        
+        document.getElementById("escenario").appendChild(joker);
+        
+        
+        
+        // Esta funcion se encarga de limpar el tablero y preparlo tras pulsar sobre el boton de Empezar.
+        function prepararTablero () {
+          // Ajustamos el nivel y preparamos la interfaz para que el usuario sepa cual es el nivel correspondiente.
+          nivel = 1;
+          document.getElementById("infoNivel").innerHTML = "Nivel: " + nivel;
+          
+          // Recogemos el escenario porque vamos a trabajar con el para la eliminacion de toro el tablero.
+          var escenario = document.getElementById("escenario");
+          
+          var joker = document.getElementById("joker");
+          escenario.removeChild(joker);
+          
+          var batman = document.getElementById("batman");
+          escenario.removeChild(batman);
+          
+          var batmobile = document.getElementById("batmobile");
+          escenario.removeChild(batmobile);
+          
+          var cartas = document.querySelectorAll(".carta");
+          for (var i = 0; i < cartas.length; i++) {
+            escenario.removeChild(cartas[i]);
+          }
+          
+        }
+      }
+      
+      
+      
+      
+      
+      // A continuacion se encuentran los botones de movimiento de batman:
+      
+      // Esta funcion sube a batman.
+      function subir () {
+        var batman = document.getElementById("batman");
+        clearInterval(movimientoBatman);
+        
+        // Genera el movimiento de subida de batman
+        movimientoBatman = setInterval(movimientoSubida, 1, batman);
+        
+        function movimientoSubida (batman) {
+          // Calcula el limite superior del escenario
+          var limiteSuperior = 0;
+          
+          // Compara si batman a llegado al limite
+          if (batman.offsetTop <= limiteSuperior) {
+            clearInterval(movimientoBatman);
+            
+          } else {
+            batman.style.top = batman.offsetTop - 1 + "px";
+            
+          }
+          
+        }
+      }
+      
+      
+      // Esta funcion detiene a batman
+      function parar () {
+        // Detiene todos los movimientos de batman
+        clearInterval(movimientoBatman);
+      }
+      
+      
+      // Esta funcion baja a batman.
+      function bajar () {
+        var batman = document.getElementById("batman");
+        clearInterval(movimientoBatman);
+        
+        // Genera el movimiento de bajada de batman
+        movimientoBatman = setInterval(movimientoSubida, 1, batman);
+        
+        function movimientoSubida (batman) {
+          //Calcula el limite inferior del escenario
+          var limiteInferior = document.getElementById("escenario").offsetHeight;
+          
+          // Compara si batman a llegado al limite
+          if (batman.offsetTop + batman.offsetHeight >= limiteInferior) {
+            clearInterval(movimientoBatman);
+            
+          } else {
+            batman.style.top = batman.offsetTop + 1 + "px";
+            
+          }
+          
+        }
+      }
+      
+      
+      // A continuacion se encuentra el lanzamiento de cartas del joker que se ejecuta tras pulsar sobre el joker
+      function lanzamiento () {
+        
+        // Controlamos que no quede ninguna carta en el juego, para poder lanzar las siguientes.
+        if (jugadaCompletada) {
+          jugadaCompletada = false; // <- Bloquea la pulsacion del joker para no ejecutar el lanzamiento de nuevo hasta que no termine el movimiento de la carta.
+          
+          document.getElementById("joker").style.top = Math.floor((Math.random() * 450)) + "px"; // <- Mueve aleatoriamente al joker para el lanzamiento.
+          
+          var cantidadCartas = nivel;
+
+          for (var i = 0; i < cantidadCartas; i++) {
+            lanzarCarta();
+
+          }
+        }
+        
+        function lanzarCarta () {
+          var cartaNueva = document.createElement("img");
+          document.getElementById("escenario").appendChild(cartaNueva);
+          
+          cartaNueva.className = "carta";
+          cartaNueva.src = "images/card.png";
+          cartaNueva.style.position = "absolute";
+          cartaNueva.style.top = document.getElementById("joker").offsetTop + "px";
+          cartaNueva.style.left = document.getElementById("joker").offsetLeft + "px";
+          cartaNueva.className = "carta";
+          cartaNueva.value = Math.floor((Math.random() * 450)); // <- Este es el objetivo de la carta, mas tarde se va a traducir como el top donde tiene que impactar la carta.
+          
+          var intervaloCarta = setInterval(movimientoCarta, 5, cartaNueva);
+          
+          function movimientoCarta (carta) {
+            var batman = document.getElementById("batman");
+            var batmobile = document.getElementById("batmobile");
+            
+            // Las siguientes variables las utilizo para calculos de impacto contra batman o el batmobile
+            var puntoMedioCarta = carta.offsetHeight / 2 + carta.offsetTop;
+            
+            if (puntoMedioCarta > batman.offsetTop && puntoMedioCarta < batman.offsetTop + batman.offsetHeight && carta.offsetLeft + carta.offsetWidth >= batman.offsetLeft) {
+              // La carta ha impactado contra batman
+              clearInterval(intervaloCarta);
+              carta.parentNode.removeChild(carta);
+              
+              if (document.querySelectorAll(".carta").length == 0) {
+                jugadaCompletada = true;
+                nivel += 1;
+                document.getElementById("infoNivel").innerHTML = "Nivel: " + nivel;
+                
+              }
+              
+            } else {
+              // La carta no ha impactado contra batman
+              
+              if (carta.offsetLeft + carta.offsetWidth == batmobile.offsetLeft) {
+                // La carta ha impactado contra el batmobile
+                clearInterval(intervaloCarta);
+                carta.src = "images/explosion.png";
+                
+                // Como el juego ha terminado reajustamos los botones
+                document.getElementById("botonEmpezar").disabled = false;
+                document.getElementById("botonSubir").disabled = true;
+                document.getElementById("botonParar").disabled = true;
+                document.getElementById("botonBajar").disabled = true;
+                
+              } else {
+                console.log(carta.value);
+                // La carta tampoco ha impactado contra el batmobile
+                carta.style.left = carta.offsetLeft + 1 + "px";
+                
+                // Ahora vamos a calcular la posicion de su objetivo:
+                if (carta.offsetTop != carta.value) {
+                  
+                  if (carta.offsetTop < carta.value) {
+                    // · Si el objetivo se encuentra mas bajo que la posicion actual de la carta
+                    carta.style.top = carta.offsetTop + 1 + "px";
+
+                  } else if (carta.offsetTop > carta.value) {
+                    // · Si el objetivo se encuentra mas alto que la posicion actual de la carta
+                    carta.style.top = carta.offsetTop - 1 + "px";
+
+                  }
+                }
+                
+              }
+            }
+          }
+        }
+      }
+      
+    </script>
+  </head>
+  <body>
+    <button id="botonEmpezar" onclick="empezar()">Empezar</button>
+    <button id="botonSubir" onclick="subir()" disabled="disabled">Arriba</button>
+    <button id="botonParar" onclick="parar()" disabled="disabled">Parar</button>
+    <button id="botonBajar" onclick="bajar()" disabled="disabled">Abajo</button>
+    
+    <p id="infoNivel">Nivel: 1</p>
+    
+    <div id="escenario"></div>
+  </body>
+</html>
